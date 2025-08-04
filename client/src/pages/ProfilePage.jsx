@@ -29,7 +29,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-cover bg-no-repeat flex items-center justify-center">
+    <div className="min-h-screen bg-cover bg-no-repeat flex items-center justify-center backdrop-blur-md">
       <div
         className="w-5/6 max-w-2xl flex items-center justify-between max-sm:flex-col-reverse
        text-gray-300 backdrop-blur-2xl border-2 border-gray-600 rounded-lg"
@@ -86,7 +86,9 @@ const ProfilePage = () => {
         <img
           src={authUser?.profilePic || assets.logo_icon}
           alt=""
-          className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImg && 'rounded-full'}`}
+          className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${
+            selectedImg && "rounded-full"
+          }`}
         />
       </div>
     </div>
