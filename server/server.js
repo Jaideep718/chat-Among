@@ -38,14 +38,6 @@ io.on("connection", (socket) => {
 
 // Middleware setup
 app.use(express.json({ limit: "4mb" }));
-// app.use(
-//   cors({
-//     origin: ["https://chat-among-frontend.vercel.app","http://localhost:5173"],
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     credentials: true,
-//   })
-// );
-// app.options("*", cors());
 const allowedOrigins = [
   "https://chat-among-frontend.vercel.app",
   "http://localhost:5173",
@@ -77,10 +69,11 @@ app.use("/api/messages", messageRouter);
 //Connection to Database
 await connectDB();
 
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server is running on the port: ${PORT}`);
-});
-
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  server.listen(PORT, () => {
+    console.log(`Server is running on the port: ${PORT}`);
+  });
+}
 //Export server for vercel
 export default server;
