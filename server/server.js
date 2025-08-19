@@ -38,7 +38,14 @@ io.on('connection',(socket)=>{
 
 // Middleware setup
 app.use(express.json({limit: '4mb'}));
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://chat-among-frontend.vercel.app","http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+app.options("*", cors());
 
 //Routes setup
 app.use("/api/status", (req,res)=>{res.send("Server is live")});
