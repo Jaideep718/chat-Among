@@ -38,26 +38,6 @@ io.on("connection", (socket) => {
 
 // Middleware setup
 app.use(express.json({ limit: "4mb" }));
-// const allowedOrigins = [
-//   "https://chat-among-frontend.vercel.app",
-//   "http://localhost:5173",
-// ];
-// app.use((req, res, next) => {
-//   const origin = req.headers.origin;
-//   if (allowedOrigins.includes(origin)) {
-//     res.header("Access-Control-Allow-Origin", origin);
-//   }
-//   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
-//   res.header(
-//     "Access-Control-Allow-Headers",
-//     "Content-Type,Authorization,token"
-//   );
-//   res.header("Access-Control-Allow-Credentials", "true");
-//   if (req.method === "OPTIONS") {
-//     return res.sendStatus(200);
-//   }
-//   next();
-// });
 app.use(cors());
 
 //Routes setup
