@@ -2,6 +2,8 @@ import Message from "../models/Message.model.js";
 import User from "../models/User.model.js";
 import cloudinary from "../lib/cloudinary.js";
 import { io, userSocketMap } from "../server.js";
+import { checkMessageToxicity } from "../lib/aiModerator.js";
+import { translateMessage } from "../lib/aiTranslator.js";
 
 // Get all user except the logged in user
 export const getUserForSidebar = async (req, res) => {
@@ -34,39 +36,41 @@ export const getUserForSidebar = async (req, res) => {
 };
 
 // Get all messages for selected user
-export const getMessages = async(req, res) => {
+export const getMessages = async (req, res) => {
   try {
-    const {id: selectedUserId} = req.params;
+    const { id: selectedUserId } = req.params;
     const myId = req.user._id;
 
     const messages = await Message.find({
       $or: [
-        {senderId: myId, receiverId: selectedUserId},
-        {senderId: selectedUserId, receiverId: myId},
-      ]
+        { senderId: myId, receiverId: selectedUserId },
+        { senderId: selectedUserId, receiverId: myId },
+      ],
     });
 
-    await Message.updateMany({senderId: selectedUserId, receiverId: myId}, {seen: true});
+    await Message.updateMany(
+      { senderId: selectedUserId, receiverId: myId },
+      { seen: true }
+    );
 
-    res.status(200).json({success: true, messages});
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({success: false, message: "Internal server error"});
-  }
-}
-
-
-// api to mark message as seen using message id
-export const markMessageAsSeen = async (req, res) => {
-  try {
-    const {id} = req.params;
-    await Message.findByIdAndUpdate(id, {seen: true});
-    res.status(200).json({success: true});
+    res.status(200).json({ success: true, messages });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
-}
+};
+
+// api to mark message as seen using message id
+export const markMessageAsSeen = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Message.findByIdAndUpdate(id, { seen: true });
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 
 // Send message to selected user
 export const sendMessage = async (req, res) =>{
@@ -75,13 +79,36 @@ export const sendMessage = async (req, res) =>{
     const receiverId = req.params.id;
     const senderId = req.user._id;
 
+    const receiver = await User.findById(receiverId);
+    const targetLang = receiver?.preferredLanguage || "English";
+
+    let translatedText = text;
+    if(targetLang !== "English"){
+      translatedText = await translateMessage(text, targetLang);
+    }
+
+    const status = await checkMessageToxicity(text);
+    if (status == "TOXIC") {
+      return res.status(400).json({
+        success: false,
+        message: "Your message was flagged as toxic and was not sent."
+      });
+    }
+
     let imageUrl;
     if(image){
       const uploadResponse = await cloudinary.uploader.upload(image);
       imageUrl = uploadResponse.secure_url;
     }
 
-    const newMessage = await Message.create({senderId, receiverId, text, image: imageUrl});
+    const newMessage = await Message.create({
+      senderId,
+      receiverId,
+      text,
+      image: imageUrl,
+      translatedText: translatedText,
+      showTranslation: true,
+    });
 
     // Emit the new message to the receiver's socket
     const receiverSocketId = userSocketMap[receiverId];
@@ -100,4 +127,3 @@ export const sendMessage = async (req, res) =>{
     res.status(500).json({success: false, message: 'Internal Server Errro'});
   }
 }
-

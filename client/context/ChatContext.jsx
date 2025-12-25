@@ -50,7 +50,8 @@ export const ChatProvider = ({children})=>{
             }
         } catch (error) {
             console.error(error.message);
-            toast.error(error.message);
+            const errorMessage = error.response?.data?.message || error.message;
+            toast.error(errorMessage);
         }
     }
 

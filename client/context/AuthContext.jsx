@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
         toast.success("Profile updated successfully");
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
   // Connect socket function to handle socket connection and online users updates

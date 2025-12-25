@@ -22,6 +22,9 @@ const messageSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    translatedText: {
+      type: String,
+    }
   },
   { timestamps: true }
 );

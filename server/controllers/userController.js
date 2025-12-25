@@ -85,7 +85,7 @@ export const checkAuth = (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { profilePic, bio, fullName } = req.body;
+    const { profilePic, bio, fullName, preferredLanguage } = req.body;
 
     const userId = req.user._id;
     let updatedUser;
@@ -93,7 +93,7 @@ export const updateProfile = async (req, res) => {
     if (!profilePic) {
       updatedUser = await User.findByIdAndUpdate(
         userId,
-        { bio, fullName },
+        { bio, fullName, preferredLanguage },
         { new: true }
       );
     } else {
@@ -101,7 +101,7 @@ export const updateProfile = async (req, res) => {
 
       updatedUser = await User.findByIdAndUpdate(
         userId,
-        { profilePic: upload.secure_url, bio, fullName },
+        { profilePic: upload.secure_url, bio, fullName, preferredLanguage },
         { new: true }
       );
     }
