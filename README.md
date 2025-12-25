@@ -9,6 +9,8 @@ Supports real-time messaging, authentication, user profiles, and responsive UI.
 
 - 🔒 **Authentication**: Sign up, login, and secure user sessions.
 - 💬 **Real-time Chat**: Instant messaging powered by Socket.io.
+- 🛡️ **AI Chat Moderation**: Implements a sentiment analysis model to automatically flag or hide toxic messages, protecting the community environment.
+- 🌍 **Real-time Translation**: Integrates an AI translation API to allow users who speak different languages to communicate seamlessly in real-time.
 - 👤 **User Profiles**: View and update user information.
 - 🎨 **Modern UI**: Responsive design with custom backgrounds and avatars.
 - 🌐 **CORS Support**: Works seamlessly in local and production environments.
@@ -19,7 +21,7 @@ Supports real-time messaging, authentication, user profiles, and responsive UI.
 ## Tech Stack
 
 - **Frontend**: React, React Router, Tailwind CSS, Axios, React Hot Toast
-- **Backend**: Express, MongoDB (Mongoose), Socket.io, Cloudinary
+- **Backend**: Express, MongoDB (Mongoose), Socket.io, Cloudinary, AI Integration (Gemini/OpenAI)
 - **Deployment**: Vercel (frontend & backend), MongoDB Atlas
 
 ---
@@ -44,6 +46,7 @@ JWT_SECRET=your_jwt_secret
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
+AI_API_KEY=your_ai_api_key
 ```
 
 #### Frontend (`client/.env`)
@@ -118,6 +121,7 @@ chat-app/
 - **CORS Errors**: Ensure both local and deployed origins are allowed in backend CORS config.
 - **MongoDB Auth Errors**: Double-check your MongoDB URI and credentials.
 - **Socket.io Issues**: Make sure backend is running and accessible from frontend.
+- **AI Features Not Working**: Ensure your AI_API_KEY is set correctly in the backend environment variables.
 
 ---
 
